@@ -1,12 +1,11 @@
 package com.punchy.punchclock.entity;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.List;
 
+@Entity
+@Table(name="manager")
 public class Manager {
 
     @Id
