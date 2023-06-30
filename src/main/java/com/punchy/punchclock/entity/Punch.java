@@ -12,5 +12,9 @@ public class Punch {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name="employee_id", nullable=false)
+    private Employee employee;
+
     private Date timestamp;
 }

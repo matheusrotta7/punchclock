@@ -16,7 +16,7 @@ public class Employee {
     @JoinColumn(name="manager_id", nullable=false)
     private Manager manager;
 
-    @OneToMany
+    @OneToMany(mappedBy = "employee")
     private List<Punch> punchList;
     private String name;
 
