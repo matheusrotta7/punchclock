@@ -18,4 +18,12 @@ public class PunchService {
     public List<Punch> getPunchListGivenFilter(PunchFilter punchFilter) {
         return punchRepository.getPunchListGivenFilter(punchFilter);
     }
+
+    public Punch getPunchById(Long id) {
+        return punchRepository.getReferenceById(id);
+    }
+
+    public Punch createPunch(Punch punchBody) {
+        return punchRepository.save(punchBody);
+    }
 }

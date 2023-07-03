@@ -14,4 +14,9 @@ public class EmployeeService {
     public Employee getEmployeeWithId(Long id) {
         return employeeRepository.getReferenceById(id);
     }
+
+    public Employee createEmployee(Employee employeeBody) {
+        return employeeRepository.save(employeeBody);
+    }
+
 }
