@@ -5,6 +5,7 @@ import com.punchy.punchclock.entity.Manager;
 import com.punchy.punchclock.service.EmployeeService;
 import com.punchy.punchclock.service.ManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,8 +16,13 @@ public class ManagerController {
     private ManagerService managerService;
 
     @GetMapping("/{id}")
-    public Manager getManager(@PathVariable("id") Long id) {
-        return managerService.getManagerWithId(id);
+    public ResponseEntity<Manager> getManager(@PathVariable("id") Long id) {
+        Manager manager = managerService.getManagerWithId(id);
+        if (manager != null) {
+            return ResponseEntity.ok(manager);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping

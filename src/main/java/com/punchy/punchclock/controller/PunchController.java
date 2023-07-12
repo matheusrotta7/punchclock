@@ -3,6 +3,7 @@ package com.punchy.punchclock.controller;
 import com.punchy.punchclock.entity.Punch;
 import com.punchy.punchclock.service.PunchService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,8 +14,13 @@ public class PunchController {
     private PunchService punchService;
 
     @GetMapping("/{id}")
-    public Punch getPunch(@PathVariable("id") Long id) {
-        return punchService.getPunchById(id);
+    public ResponseEntity<Punch> getPunch(@PathVariable("id") Long id) {
+        Punch punch = punchService.getPunchById(id);
+        if (punch != null) {
+            return ResponseEntity.ok(punch);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
