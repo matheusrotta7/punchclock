@@ -48,8 +48,13 @@ public class DateUtils {
         DateUtils du = new DateUtils();
         Date lastMomentOfFebruaryOnLeapYear = du.getLastMomentOfMonth(Calendar.FEBRUARY, 2020);
         Date firstMomentOfDecember = du.getFirstMomentOfMonth(Calendar.DECEMBER, 2023);
-        System.out.println("lastMomentOfFebruaryOnLeapYear" + lastMomentOfFebruaryOnLeapYear);
-        System.out.println("firstMomentOfDecember" + firstMomentOfDecember);
+        System.out.println("lastMomentOfFebruaryOnLeapYear: " + lastMomentOfFebruaryOnLeapYear);
+        System.out.println("firstMomentOfDecember: " + firstMomentOfDecember);
+
+        System.out.println("***********************************");
+        calendar.set(2023, 3, 23, 15, 44, 12);
+        Date testDateString = calendar.getTime();
+        System.out.println("test date format: " + testDateString);
 
     }
 }

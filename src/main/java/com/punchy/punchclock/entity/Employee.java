@@ -1,6 +1,7 @@
 package com.punchy.punchclock.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class Employee {
     private Manager manager;
 
     @OneToMany(mappedBy = "employee")
+    @JsonManagedReference
     private List<Punch> punchList;
     private String name;
 

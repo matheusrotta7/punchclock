@@ -33,14 +33,24 @@ public class CustomPunchRepositoryImpl implements CustomPunchRepository {
             queryString += " and p.employee.id = " + punchFilter.getEmployeeId();
         }
 
+        Date monthBegin = null;
+        Date monthEnd = null;
+
         if (punchFilter.getMonth() != null) {
-            Date monthBegin = dateUtils.getFirstMomentOfMonth(punchFilter.getMonth(), punchFilter.getYear());
-            Date monthEnd = dateUtils.getLastMomentOfMonth(punchFilter.getMonth(), punchFilter.getYear());
-            queryString += " and p.timestamp < " + monthEnd;
-            queryString += " and p.timestamp > " + monthBegin;
+            monthBegin = dateUtils.getFirstMomentOfMonth(punchFilter.getMonth(), punchFilter.getYear());
+            monthEnd = dateUtils.getLastMomentOfMonth(punchFilter.getMonth(), punchFilter.getYear());
+            queryString += " and p.timestamp < :monthEnd";
+            queryString += " and p.timestamp > :monthBegin";
+
         }
 
         Query query = entityManager.createQuery(queryString);
+
+        if (punchFilter.getMonth() != null) {
+            query.setParameter("monthBegin", monthBegin);
+            query.setParameter("monthEnd", monthEnd);
+        }
+
         List<Punch> punchList = (List<Punch>) query.getResultList();
 
         return punchList;
