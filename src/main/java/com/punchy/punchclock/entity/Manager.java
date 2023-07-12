@@ -1,5 +1,6 @@
 package com.punchy.punchclock.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -13,6 +14,7 @@ public class Manager {
     private Long id;
 
     @OneToMany(mappedBy = "manager")
+    @JsonManagedReference
     private List<Employee> employeeList;
 
     private String name;

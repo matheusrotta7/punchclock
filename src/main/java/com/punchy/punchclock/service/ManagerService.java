@@ -13,7 +13,7 @@ public class ManagerService {
     private ManagerRepository managerRepository;
 
     public Manager getManagerWithId(Long id) {
-        return managerRepository.getReferenceById(id);
+        return managerRepository.findById(id).orElse(null);
     }
 
     public Manager createManager(Manager managerBody) {

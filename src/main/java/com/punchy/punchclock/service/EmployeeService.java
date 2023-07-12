@@ -5,6 +5,8 @@ import com.punchy.punchclock.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class EmployeeService {
 
@@ -12,7 +14,8 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
 
     public Employee getEmployeeWithId(Long id) {
-        return employeeRepository.getReferenceById(id);
+        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
+        return optionalEmployee.orElse(null);
     }
 
     public Employee createEmployee(Employee employeeBody) {

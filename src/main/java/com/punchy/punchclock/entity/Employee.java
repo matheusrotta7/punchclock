@@ -1,5 +1,6 @@
 package com.punchy.punchclock.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public class Employee {
 
     @ManyToOne
     @JoinColumn(name="manager_id", nullable=false)
+    @JsonBackReference
     private Manager manager;
 
     @OneToMany(mappedBy = "employee")

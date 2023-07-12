@@ -28,10 +28,11 @@ public class CustomPunchRepositoryImpl implements CustomPunchRepository {
     @Override
     public List<Punch> getPunchListGivenFilter(PunchFilter punchFilter) {
         String queryString = "Select p from Punch p where 1=1";
+
         if (punchFilter.getEmployeeId() != null) {
             queryString += " and p.employee.id = " + punchFilter.getEmployeeId();
-
         }
+
         if (punchFilter.getMonth() != null) {
             Date monthBegin = dateUtils.getFirstMomentOfMonth(punchFilter.getMonth(), punchFilter.getYear());
             Date monthEnd = dateUtils.getLastMomentOfMonth(punchFilter.getMonth(), punchFilter.getYear());

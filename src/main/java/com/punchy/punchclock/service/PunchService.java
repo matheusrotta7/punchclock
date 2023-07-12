@@ -20,7 +20,7 @@ public class PunchService {
     }
 
     public Punch getPunchById(Long id) {
-        return punchRepository.getReferenceById(id);
+        return punchRepository.findById(id).orElse(null);
     }
 
     public Punch createPunch(Punch punchBody) {
