@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/punch")
+@CrossOrigin
 public class PunchController {
 
     @Autowired
