@@ -5,6 +5,7 @@ import com.punchy.punchclock.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -22,4 +23,7 @@ public class EmployeeService {
         return employeeRepository.save(employeeBody);
     }
 
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.getAllEmployees();
+    }
 }

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/employee")
 @CrossOrigin
@@ -27,6 +29,16 @@ public class EmployeeController {
     @PostMapping
     public Employee createEmployee(@RequestBody Employee employeeBody) {
         return employeeService.createEmployee(employeeBody);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Employee>> getAllEmployees() {
+        List<Employee> employeeList = employeeService.getAllEmployees();
+        if (employeeList != null) {
+            return ResponseEntity.ok(employeeList);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 
