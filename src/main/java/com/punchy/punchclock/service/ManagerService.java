@@ -6,6 +6,8 @@ import com.punchy.punchclock.repository.ManagerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class ManagerService {
 
@@ -18,5 +20,9 @@ public class ManagerService {
 
     public Manager createManager(Manager managerBody) {
         return managerRepository.save(managerBody);
+    }
+
+    public List<Manager> getAllManagers() {
+        return managerRepository.getAllManagers();
     }
 }

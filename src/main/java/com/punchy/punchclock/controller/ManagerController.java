@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/manager")
 @CrossOrigin
@@ -21,6 +23,16 @@ public class ManagerController {
         Manager manager = managerService.getManagerWithId(id);
         if (manager != null) {
             return ResponseEntity.ok(manager);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Manager>> getAllManagers() {
+        List<Manager> managerList = managerService.getAllManagers();
+        if (managerList != null) {
+            return ResponseEntity.ok(managerList);
         } else {
             return ResponseEntity.notFound().build();
         }
