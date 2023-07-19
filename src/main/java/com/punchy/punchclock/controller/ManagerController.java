@@ -43,4 +43,15 @@ public class ManagerController {
         return managerService.createManager(managerBody);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteManager(@PathVariable("id") Long id) {
+        try {
+            managerService.deleteManager(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
 }

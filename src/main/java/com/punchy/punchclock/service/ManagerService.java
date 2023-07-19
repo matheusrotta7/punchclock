@@ -25,4 +25,8 @@ public class ManagerService {
     public List<Manager> getAllManagers() {
         return managerRepository.getAllManagers();
     }
+
+    public void deleteManager(Long id) {
+        managerRepository.deleteById(id);
+    }
 }
