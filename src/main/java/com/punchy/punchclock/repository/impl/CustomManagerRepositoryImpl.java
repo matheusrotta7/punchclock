@@ -1,11 +1,12 @@
 package com.punchy.punchclock.repository.impl;
 
-import com.punchy.punchclock.entity.Employee;
 import com.punchy.punchclock.entity.Manager;
 import com.punchy.punchclock.repository.CustomManagerRepository;
+import com.punchy.punchclock.utils.StringUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class CustomManagerRepositoryImpl implements CustomManagerRepository {
     public List<Manager> getAllManagers() {
         List<Manager> result = new ArrayList<>();
 
-        String queryString = "Select m.id, m.name from Manager m where 1=1";
+        String queryString = "Select m.id, m.name, m.username, m.password from Manager m where 1=1";
 
         Query query = entityManager.createQuery(queryString);
 
@@ -32,7 +33,9 @@ public class CustomManagerRepositoryImpl implements CustomManagerRepository {
             Manager curManager = new Manager();
 
             curManager.setId(parseLong(row[0].toString()));
-            curManager.setName(row[1].toString());
+            curManager.setName(StringUtils.nullSafeToString(row[1].toString()));
+            curManager.setUsername(StringUtils.nullSafeToString(row[2]));
+            curManager.setPassword(StringUtils.nullSafeToString(row[3]));
 
             result.add(curManager);
         }
