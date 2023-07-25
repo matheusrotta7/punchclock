@@ -22,6 +22,8 @@ public class Punch {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date timestamp;
 
+    private String punchStatus;
+
     public Long getId() {
         return id;
     }
@@ -44,5 +46,13 @@ public class Punch {
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getPunchStatus() {
+        return punchStatus;
+    }
+
+    public void setPunchStatus(String punchStatus) {
+        this.punchStatus = punchStatus;
     }
 }

@@ -28,4 +28,14 @@ public class PunchController {
     public Punch createPunch(@RequestBody Punch punchBody) {
         return punchService.createPunch(punchBody);
     }
+
+    @PutMapping
+    public ResponseEntity<Punch> updatePunch(@RequestBody Punch punchBody) {
+        try {
+            return ResponseEntity.ok(punchService.updatePunch(punchBody));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
