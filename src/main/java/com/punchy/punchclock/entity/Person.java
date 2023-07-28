@@ -5,6 +5,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 
+import java.util.Date;
+
 @MappedSuperclass
 public class Person {
 
@@ -17,6 +19,26 @@ public class Person {
     private String username;
 
     private String password;
+
+    private String token;
+
+    private Date tokenExpiryDate;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public Date getTokenExpiryDate() {
+        return tokenExpiryDate;
+    }
+
+    public void setTokenExpiryDate(Date tokenExpiryDate) {
+        this.tokenExpiryDate = tokenExpiryDate;
+    }
 
     public String getUsername() {
         return username;

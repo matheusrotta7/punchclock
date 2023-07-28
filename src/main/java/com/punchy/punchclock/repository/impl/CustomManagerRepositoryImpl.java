@@ -1,6 +1,7 @@
 package com.punchy.punchclock.repository.impl;
 
 import com.punchy.punchclock.entity.Manager;
+import com.punchy.punchclock.entity.Person;
 import com.punchy.punchclock.repository.CustomManagerRepository;
 import com.punchy.punchclock.utils.StringUtils;
 import jakarta.persistence.EntityManager;
@@ -42,4 +43,5 @@ public class CustomManagerRepositoryImpl implements CustomManagerRepository {
 
         return result;
     }
+
 }

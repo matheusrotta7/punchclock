@@ -5,6 +5,15 @@ public class LoginResponse {
     private String role;
     private Long id;
     private String name;
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public String getRole() {
         return role;

@@ -3,6 +3,7 @@ package com.punchy.punchclock.utils;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.Calendar;
@@ -10,6 +11,14 @@ import java.util.Date;
 
 @Component
 public class DateUtils {
+
+    public Date nowPlusHours(int numHours) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.HOUR, numHours);
+
+        return cal.getTime();
+    }
 
     public Date getFirstMomentOfMonth(int month, int year) {
         Calendar calendar = Calendar.getInstance();

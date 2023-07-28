@@ -19,7 +19,7 @@ public class SecurityConfiguration  {
         http
                 .authorizeHttpRequests((authz) -> authz
                         .anyRequest()
-                        .authenticated()
+                        .permitAll()
                 ).csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(withDefaults());
         return http.build();
