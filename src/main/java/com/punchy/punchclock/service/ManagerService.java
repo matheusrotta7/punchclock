@@ -1,13 +1,13 @@
 package com.punchy.punchclock.service;
 
 import com.punchy.punchclock.entity.Manager;
-import com.punchy.punchclock.entity.Manager;
 import com.punchy.punchclock.entity.Person;
 import com.punchy.punchclock.repository.ManagerRepository;
 import com.punchy.punchclock.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -35,16 +35,7 @@ public class ManagerService {
         managerRepository.deleteById(id);
     }
 
-    public void saveToken(String token, Person targetPerson) {
-        Manager manager = new Manager();
-
-        manager.setId(targetPerson.getId());
-        manager.setName(targetPerson.getName());
-        manager.setPassword(targetPerson.getPassword());
-
-        manager.setToken(token);
-        manager.setTokenExpiryDate(dateUtils.nowPlusHours(9));
-
-        managerRepository.save(manager);
+    public void saveToken(String token, Date tokenExpiryDate, Person targetPerson) {
+        managerRepository.saveToken(token, tokenExpiryDate, targetPerson);
     }
 }

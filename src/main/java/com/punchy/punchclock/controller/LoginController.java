@@ -15,9 +15,6 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
-    //post method with body username password
-    //returns token that allows user to do what it should do
-    //for now it will return a string, but this will be changed later
     @PostMapping
     public ResponseEntity<LoginResponse> login(@RequestBody Person loginBody) {
         try {
@@ -28,5 +25,17 @@ public class LoginController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @GetMapping
+    public ResponseEntity<LoginResponse> recoverUserThroughToken(@RequestHeader("token") String token) {
+        try {
+            LoginResponse loginResponse = loginService.recoverUserViaToken(token);
+            return ResponseEntity.ok(loginResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
 
 }

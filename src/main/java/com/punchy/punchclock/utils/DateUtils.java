@@ -2,6 +2,9 @@ package com.punchy.punchclock.utils;
 
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -42,6 +45,16 @@ public class DateUtils {
         calendar.set(year, month, dateMax, hourMax, minuteMax, secondMax);
 
         return calendar.getTime();
+    }
+
+    public Date stringToDate(String dateString) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            return dateFormat.parse(dateString);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static void main(String[] args) {
