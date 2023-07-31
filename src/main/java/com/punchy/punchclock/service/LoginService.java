@@ -56,7 +56,7 @@ public class LoginService {
         return loginResponse;
     }
 
-    public LoginResponse recoverUserViaToken(String token) {
+    public LoginResponse recoverUserViaToken(String token) throws PunchException {
         List<Person> personList = getAllPeople();
 
         Person targetPerson = personList.stream()
@@ -71,7 +71,7 @@ public class LoginService {
             lr.setId(targetPerson.getId());
             return lr;
         } else {
-            return null;
+            throw new PunchException("A person was not found with this cookie");
         }
     }
 

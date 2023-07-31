@@ -1,6 +1,7 @@
 package com.punchy.punchclock.controller;
 
 import com.punchy.punchclock.entity.Person;
+import com.punchy.punchclock.exception.PunchException;
 import com.punchy.punchclock.service.LoginService;
 import com.punchy.punchclock.vo.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ public class LoginController {
         try {
             LoginResponse loginResponse = loginService.recoverUserViaToken(token);
             return ResponseEntity.ok(loginResponse);
+        } catch (PunchException pe) {
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
