@@ -41,5 +41,15 @@ public class EmployeeController {
         }
     }
 
+    @GetMapping("/manager/{id}")
+    public ResponseEntity<List<Employee>> getAllEmployeesOfManager(@PathVariable("id") Long managerId) {
+        List<Employee> employeeList = employeeService.getAllEmployeesOfManager(managerId);
+        if (employeeList != null) {
+            return ResponseEntity.ok(employeeList);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 }

@@ -63,4 +63,14 @@ public class CustomEmployeeRepositoryImpl implements CustomEmployeeRepository {
         query.executeUpdate();
     }
 
+    @Override
+    public List<Employee> getAllEmployeesOfManager(Long managerId) {
+
+        String queryString = "from Employee e where e.manager.id = :managerId";
+        Query query = entityManager.createQuery(queryString);
+        query.setParameter("managerId", managerId);
+
+        return query.getResultList();
+    }
+
 }

@@ -15,4 +15,6 @@ public interface CustomEmployeeRepository {
 
     @Transactional
     void saveToken(String token, Date tokenExpiryDate, Person targetPerson);
+
+    List<Employee> getAllEmployeesOfManager(Long managerId);
 }

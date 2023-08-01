@@ -36,4 +36,8 @@ public class EmployeeService {
     public void saveToken(String token, Date tokenExpiryDate, Person targetPerson) {
         employeeRepository.saveToken(token, tokenExpiryDate, targetPerson);
     }
+
+    public List<Employee> getAllEmployeesOfManager(Long managerId) {
+        return employeeRepository.getAllEmployeesOfManager(managerId);
+    }
 }
