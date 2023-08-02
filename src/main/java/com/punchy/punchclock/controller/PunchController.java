@@ -1,6 +1,7 @@
 package com.punchy.punchclock.controller;
 
 import com.punchy.punchclock.entity.Punch;
+import com.punchy.punchclock.exception.PunchException;
 import com.punchy.punchclock.service.PunchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,17 +26,28 @@ public class PunchController {
     }
 
     @PostMapping
-    public Punch createPunch(@RequestBody Punch punchBody) {
-        return punchService.createPunch(punchBody);
+    public ResponseEntity<Punch> createPunch(@RequestBody Punch punchBody) {
+        try {
+            Punch punch = punchService.createPunch(punchBody);
+            return ResponseEntity.ok(punch);
+        } catch (PunchException pe) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @PutMapping
-    public ResponseEntity<Punch> updatePunch(@RequestBody Punch punchBody) {
+    public ResponseEntity<Void> updatePunch(@RequestBody Punch punchBody) {
         try {
-            return ResponseEntity.ok(punchService.updatePunch(punchBody));
+            punchService.updatePunch(punchBody);
+            return ResponseEntity.ok().build();
+        } catch (PunchException pe) {
+            pe.printStackTrace();
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

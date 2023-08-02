@@ -1,6 +1,7 @@
 package com.punchy.punchclock.repository.impl;
 
 import com.punchy.punchclock.entity.Punch;
+import com.punchy.punchclock.entity.PunchStatus;
 import com.punchy.punchclock.filter.PunchFilter;
 import com.punchy.punchclock.repository.CustomPunchRepository;
 import com.punchy.punchclock.utils.DateUtils;
@@ -53,5 +54,14 @@ public class CustomPunchRepositoryImpl implements CustomPunchRepository {
         List<Punch> punchList = (List<Punch>) query.getResultList();
 
         return punchList;
+    }
+
+    @Override
+    public void updateStatus(Long punchId, PunchStatus punchStatus) {
+        String queryString = "Update Punch p set p.punchStatus = :newPunchStatus where p.id = :punchId";
+        Query query = entityManager.createQuery(queryString);
+        query.setParameter("newPunchStatus", punchStatus.name());
+        query.setParameter("punchId", punchId);
+        query.executeUpdate();
     }
 }
