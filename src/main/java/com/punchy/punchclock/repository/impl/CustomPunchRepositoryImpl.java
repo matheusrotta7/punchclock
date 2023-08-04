@@ -41,7 +41,16 @@ public class CustomPunchRepositoryImpl implements CustomPunchRepository {
             monthEnd = dateUtils.getLastMomentOfMonth(punchFilter.getMonth(), punchFilter.getYear());
             queryString += " and p.timestamp < :monthEnd";
             queryString += " and p.timestamp > :monthBegin";
+        }
 
+        PunchStatus punchStatus = null;
+        if (punchFilter.getPunchStatus() != null) {
+            if (punchFilter.getPunchStatus().equals("ALL_PENDING")) { //wants to fetch all pending actions
+                queryString += " and p.punchStatus like 'PENDING%'";
+            } else { //wants to fetch specific pending action
+                punchStatus = PunchStatus.valueOf(punchFilter.getPunchStatus());
+                queryString += " and p.punchStatus = :punchStatus";
+            }
         }
 
         Query query = entityManager.createQuery(queryString);
@@ -49,6 +58,9 @@ public class CustomPunchRepositoryImpl implements CustomPunchRepository {
         if (punchFilter.getMonth() != null) {
             query.setParameter("monthBegin", monthBegin);
             query.setParameter("monthEnd", monthEnd);
+        }
+        if (punchFilter.getPunchStatus() != null && !punchFilter.getPunchStatus().equals("ALL_PENDING")) {
+            query.setParameter("punchStatus", punchStatus.name());
         }
 
         List<Punch> punchList = (List<Punch>) query.getResultList();

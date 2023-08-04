@@ -10,6 +10,16 @@ public class PunchFilter {
 
     private Integer year;
 
+    private String punchStatus;
+
+    public String getPunchStatus() {
+        return punchStatus;
+    }
+
+    public void setPunchStatus(String punchStatus) {
+        this.punchStatus = punchStatus;
+    }
+
     public void setMonth(Integer month) {
         this.month = month;
     }
