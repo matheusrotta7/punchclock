@@ -1,12 +1,10 @@
 package com.punchy.punchclock.filter;
 
-import java.time.Month;
-
 public class PunchFilter {
 
     private Long employeeId;
 
-    private Integer month; //1-12
+    private Integer month;
 
     private Integer year;
 
@@ -44,7 +42,4 @@ public class PunchFilter {
         return month;
     }
 
-    public void setMonth(int month) {
-        this.month = month;
-    }
 }

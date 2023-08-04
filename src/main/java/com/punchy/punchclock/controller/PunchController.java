@@ -50,4 +50,15 @@ public class PunchController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePunch(@PathVariable("id") Long id) {
+        try {
+            punchService.deletePunch(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }

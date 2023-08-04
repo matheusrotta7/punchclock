@@ -53,6 +53,8 @@ public class CustomPunchRepositoryImpl implements CustomPunchRepository {
             }
         }
 
+        queryString += " order by p.timestamp";
+
         Query query = entityManager.createQuery(queryString);
 
         if (punchFilter.getMonth() != null) {

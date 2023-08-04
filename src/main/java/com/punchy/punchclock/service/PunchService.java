@@ -58,4 +58,8 @@ public class PunchService {
             throw new PunchException("Punch that was to be updated didn't exist in the first place");
         }
     }
+
+    public void deletePunch(Long id) {
+        punchRepository.deleteById(id);
+    }
 }

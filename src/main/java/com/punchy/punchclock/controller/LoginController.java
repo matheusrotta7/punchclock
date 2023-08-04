@@ -21,7 +21,11 @@ public class LoginController {
         try {
             LoginResponse loginResponse = loginService.login(loginBody);
             return ResponseEntity.ok(loginResponse);
-        } catch (Exception e) {
+        } catch (PunchException pe) {
+            pe.printStackTrace();
+            return ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
