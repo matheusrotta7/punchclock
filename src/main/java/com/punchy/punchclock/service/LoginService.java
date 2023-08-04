@@ -1,6 +1,7 @@
 package com.punchy.punchclock.service;
 
 import com.punchy.punchclock.entity.*;
+import com.punchy.punchclock.exception.IncorrectPasswordException;
 import com.punchy.punchclock.exception.PunchException;
 import com.punchy.punchclock.repository.AdminRepository;
 import com.punchy.punchclock.repository.EmployeeRepository;
@@ -42,13 +43,17 @@ public class LoginService {
                 .findFirst()
                 .orElse(null);
 
-        if (targetPerson != null && isPasswordCorrect(loginBody, targetPerson)) {
-            loginResponse.setId(targetPerson.getId());
-            loginResponse.setName(targetPerson.getName());
-            loginResponse.setRole(targetPerson.getClass().getSimpleName());
-            String token = UUID.randomUUID().toString();
-            saveTokenInDatabase(token, targetPerson);
-            loginResponse.setToken(token);
+        if (targetPerson != null) {
+            if (isPasswordCorrect(loginBody, targetPerson)) {
+                loginResponse.setId(targetPerson.getId());
+                loginResponse.setName(targetPerson.getName());
+                loginResponse.setRole(targetPerson.getClass().getSimpleName());
+                String token = UUID.randomUUID().toString();
+                saveTokenInDatabase(token, targetPerson);
+                loginResponse.setToken(token);
+            } else {
+                throw new IncorrectPasswordException("A person was found but the password was incorrect");
+            }
         } else {
             throw new PunchException("Person not found");
         }

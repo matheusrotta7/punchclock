@@ -1,10 +1,12 @@
 package com.punchy.punchclock.controller;
 
 import com.punchy.punchclock.entity.Person;
+import com.punchy.punchclock.exception.IncorrectPasswordException;
 import com.punchy.punchclock.exception.PunchException;
 import com.punchy.punchclock.service.LoginService;
 import com.punchy.punchclock.vo.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +23,11 @@ public class LoginController {
         try {
             LoginResponse loginResponse = loginService.login(loginBody);
             return ResponseEntity.ok(loginResponse);
-        } catch (PunchException pe) {
+        } catch (IncorrectPasswordException ipe) {
+            ipe.printStackTrace();
+            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
+        }
+        catch (PunchException pe) {
             pe.printStackTrace();
             return ResponseEntity.notFound().build();
         }
