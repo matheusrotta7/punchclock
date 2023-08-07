@@ -5,6 +5,8 @@ import com.punchy.punchclock.exception.IncorrectPasswordException;
 import com.punchy.punchclock.exception.PunchException;
 import com.punchy.punchclock.service.LoginService;
 import com.punchy.punchclock.vo.LoginResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +17,15 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 public class LoginController {
 
+    private Logger logger = LoggerFactory.getLogger(LoginController.class);
+
     @Autowired
     private LoginService loginService;
 
     @PostMapping
     public ResponseEntity<LoginResponse> login(@RequestBody Person loginBody) {
         try {
+            logger.info("Received a login request");
             LoginResponse loginResponse = loginService.login(loginBody);
             return ResponseEntity.ok(loginResponse);
         } catch (IncorrectPasswordException ipe) {
