@@ -57,6 +57,14 @@ public class DateUtils {
         }
     }
 
+    public String getMonthString(Integer month) {
+        if (month == null) {
+            return null;
+        }
+
+        return Month.of(month).name();
+    }
+
     public static void main(String[] args) {
         Calendar calendar = Calendar.getInstance();
         int actualMaximum = calendar.getActualMaximum(Calendar.DATE);
