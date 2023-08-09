@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
+import java.util.*;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -69,7 +70,7 @@ public class ReportService {
     }
 
     private void addTableHeader(PdfPTable table) {
-        Stream.of("column header 1", "column header 2", "column header 3")
+        Stream.of("Day", "Punch #1", "Punch #2", "Punch #3", "Punch #4", "Worked Hours", "Day Balance", "Special Observations")
                 .forEach(columnTitle -> {
                     PdfPCell header = new PdfPCell();
                     header.setBackgroundColor(BaseColor.LIGHT_GRAY);
@@ -80,9 +81,40 @@ public class ReportService {
     }
 
     private void addRows(PdfPTable table, List<Punch> punchList) {
-        for ()
+        Map<Integer, List<Punch>> punchListByDay = groupByDate(punchList);
+        for (Integer day : punchListByDay.keySet()) {
+            List<Punch> dailyPunches = punchListByDay.get(day);
+            table.addCell(dateUtils.dateToStringWithoutHours(dailyPunches.get(0).getTimestamp()));
+            for (Punch p : punchList) {
+                table.addCell(dateUtils.timestampToHours(p.getTimestamp()));
+            }
+
+            //check if padding necessary....
+            if (punchList.size() < 4) {
+                for (int i = 0; i < 4 - punchList.size(); i++) {
+                    table.addCell("Missing punch");
+                }
+            }
+
+            //add worked hours
+            //add day balance
+            //add special observations
+        }
     }
 
+    private Map<Integer, List<Punch>> groupByDate(List<Punch> punchList) {
+        Map<Integer, List<Punch>> punchListByDay = new HashMap<>();
+        for (Punch p : punchList) {
+            Date punchDate = p.getTimestamp();
+            int day = dateUtils.getDayFromDate(punchDate);
+            if (punchListByDay.get(day) != null) {
+                punchListByDay.get(day).add(p);
+            } else {
+                punchListByDay.put(day, List.of(p));
+            }
+        }
+        return punchListByDay;
+    }
 
 
     private void addText(Document document, int fontSize, String text) throws DocumentException {
