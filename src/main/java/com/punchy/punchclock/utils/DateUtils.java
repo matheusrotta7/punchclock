@@ -104,5 +104,73 @@ public class DateUtils {
         Date testDateString = calendar.getTime();
         System.out.println("test date format: " + testDateString);
 
+        String hourStr = "07:35";
+        String hourStrRef = "08:00";
+
+        System.out.println("*********************");
+        System.out.println("offset hour strings: ");
+
+        System.out.println(du.calculateOffsetBetweenTwoHourStrings(hourStrRef, hourStr));
+
+        hourStr = "08:35";
+        hourStrRef = "08:00";
+
+        System.out.println("*********************");
+        System.out.println("offset hour strings: ");
+
+        System.out.println(du.calculateOffsetBetweenTwoHourStrings(hourStrRef, hourStr));
+
+        hourStr = "06:35";
+        hourStrRef = "08:00";
+
+        System.out.println("*********************");
+        System.out.println("offset hour strings: ");
+
+        System.out.println(du.calculateOffsetBetweenTwoHourStrings(hourStrRef, hourStr));
+
+        hourStr = "12:35";
+        hourStrRef = "08:00";
+
+        System.out.println("*********************");
+        System.out.println("offset hour strings: ");
+
+        System.out.println(du.calculateOffsetBetweenTwoHourStrings(hourStrRef, hourStr));
+
     }
+
+    public Long calculateOffsetTime(Date dateCur, Date datePrev) {
+        Long offsetTime = dateCur.getTime() - datePrev.getTime();
+        return offsetTime;
+    }
+
+    public String calculateOffsetBetweenTwoHourStrings(String time1, String time2) {
+
+        // Splitting input strings into hours and minutes
+        String[] time1Parts = time1.split(":");
+        String[] time2Parts = time2.split(":");
+
+        int hours1 = Integer.parseInt(time1Parts[0]);
+        int minutes1 = Integer.parseInt(time1Parts[1]);
+        int hours2 = Integer.parseInt(time2Parts[0]);
+        int minutes2 = Integer.parseInt(time2Parts[1]);
+
+        // Calculating the total minutes for each time
+        int totalMinutes1 = hours1 * 60 + minutes1;
+        int totalMinutes2 = hours2 * 60 + minutes2;
+
+        // Calculating the time offset in minutes
+        int offsetMinutes = totalMinutes2 - totalMinutes1;
+
+        // Calculating hours and minutes for the offset
+        int offsetHours = offsetMinutes / 60;
+        offsetMinutes %= 60;
+
+        // Formatting the result as a string
+        if (offsetHours < 0 || (offsetHours == 0 && offsetMinutes < 0)) {
+            return String.format("-%02d:%02d", Math.abs(offsetHours), Math.abs(offsetMinutes));
+        } else {
+            return String.format("+%02d:%02d", Math.abs(offsetHours), Math.abs(offsetMinutes));
+        }
+    }
+
 }

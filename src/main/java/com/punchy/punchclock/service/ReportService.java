@@ -26,20 +26,20 @@ public class ReportService {
 
     @Autowired DateUtils dateUtils;
 
-    public byte[] generatePunchReport(PunchFilter punchFilter) {
+    public byte[] generatePunchReport(PunchFilter punchFilter) throws DocumentException {
         List<Punch> punchList = punchService.getPunchListGivenFilter(punchFilter);
         String employeeName = getEmployeeName(punchFilter.getEmployeeId());
 
         return createPDFReport(punchList, employeeName, punchFilter.getMonth());
     }
 
-    private byte[] createPDFReport(List<Punch> punchList, String employeeName, Integer month) {
+    private byte[] createPDFReport(List<Punch> punchList, String employeeName, Integer month) throws DocumentException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 
         try {
             Document document = new Document();
             document.open();
-            PdfWriter.getInstance(document, byteStream);
+            PdfWriter pdfWriter = PdfWriter.getInstance(document, byteStream);
 
             addText(document, 16, "Monthly punch report");
             document.add( new Paragraph("\n") );
@@ -57,10 +57,13 @@ public class ReportService {
 
             document.add(table);
 
-
+            byte[] byteArray = byteStream.toByteArray();
             document.close();
+            return byteArray;
+
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
         }
 
     }
@@ -85,7 +88,7 @@ public class ReportService {
         for (Integer day : punchListByDay.keySet()) {
             List<Punch> dailyPunches = punchListByDay.get(day);
             table.addCell(dateUtils.dateToStringWithoutHours(dailyPunches.get(0).getTimestamp()));
-            for (Punch p : punchList) {
+            for (Punch p : dailyPunches) {
                 table.addCell(dateUtils.timestampToHours(p.getTimestamp()));
             }
 
@@ -97,9 +100,48 @@ public class ReportService {
             }
 
             //add worked hours
-            //add day balance
+            String workedHoursString = calculateWorkedHours(dailyPunches);
+            table.addCell(workedHoursString);
+
+            //add day balance (for now it can be the difference with 8 worked hours
+            table.addCell(calculateDayBalance(workedHoursString));
+
             //add special observations
+            table.addCell("Not Implemented yet"); //todo
         }
+    }
+
+    private String calculateDayBalance(String workedHoursString) {
+        return dateUtils.calculateOffsetBetweenTwoHourStrings("08:00", workedHoursString); //08:00 hardcoded for now
+    }
+
+    private String calculateWorkedHours(List<Punch> dailyPunches) {
+        if (dailyPunches == null || dailyPunches.size() == 0) {
+            return "00:00";
+        } else if (dailyPunches.size() % 2 == 1) {
+            return "Odd number of Punches";
+        }
+
+        boolean openingPunch = true;
+        Punch prevPunch = null;
+
+        Long offsetTimeSum = 0L;
+
+        for (Punch curPunch : dailyPunches) {
+            if (openingPunch) {
+                prevPunch = curPunch;
+                openingPunch = false;
+            } else {
+                Long offsetTime = dateUtils.calculateOffsetTime(curPunch.getTimestamp(), prevPunch.getTimestamp());
+                offsetTimeSum += offsetTime;
+                openingPunch = true;
+            }
+        }
+
+        Date offsetDate = new Date(offsetTimeSum);
+        String hoursString = dateUtils.timestampToHours(offsetDate);
+
+        return hoursString;
     }
 
     private Map<Integer, List<Punch>> groupByDate(List<Punch> punchList) {
