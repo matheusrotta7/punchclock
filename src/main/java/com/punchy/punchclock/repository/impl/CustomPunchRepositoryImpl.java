@@ -36,7 +36,7 @@ public class CustomPunchRepositoryImpl implements CustomPunchRepository {
         Date monthBegin = null;
         Date monthEnd = null;
 
-        if (punchFilter.getMonth() != null) {
+        if (punchFilter.getMonth() != null && punchFilter.getYear() != null) {
             monthBegin = dateUtils.getFirstMomentOfMonth(punchFilter.getMonth(), punchFilter.getYear());
             monthEnd = dateUtils.getLastMomentOfMonth(punchFilter.getMonth(), punchFilter.getYear());
             queryString += " and p.timestamp < :monthEnd";

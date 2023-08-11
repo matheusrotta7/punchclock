@@ -1,9 +1,18 @@
 package com.punchy.punchclock.service;
 
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.io.font.CFFFont;
+import com.itextpdf.io.font.FontCache;
+import com.itextpdf.io.font.FontNames;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.canvas.parser.listener.ITextChunkLocation;
+import com.itextpdf.kernel.pdf.canvas.parser.listener.TextChunk;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Text;
 import com.punchy.punchclock.entity.Punch;
 import com.punchy.punchclock.filter.PunchFilter;
 import com.punchy.punchclock.utils.DateUtils;
@@ -26,20 +35,20 @@ public class ReportService {
 
     @Autowired DateUtils dateUtils;
 
-    public byte[] generatePunchReport(PunchFilter punchFilter) throws DocumentException {
+    public byte[] generatePunchReport(PunchFilter punchFilter)  {
         List<Punch> punchList = punchService.getPunchListGivenFilter(punchFilter);
         String employeeName = getEmployeeName(punchFilter.getEmployeeId());
 
         return createPDFReport(punchList, employeeName, punchFilter.getMonth());
     }
 
-    private byte[] createPDFReport(List<Punch> punchList, String employeeName, Integer month) throws DocumentException {
+    private byte[] createPDFReport(List<Punch> punchList, String employeeName, Integer month)  {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 
         try {
-            Document document = new Document();
-            document.open();
-            PdfWriter pdfWriter = PdfWriter.getInstance(document, byteStream);
+            PdfWriter pdfWriter = new PdfWriter(byteStream);
+            PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+            Document document = new Document(pdfDocument);
 
             addText(document, 16, "Monthly punch report");
             document.add( new Paragraph("\n") );
@@ -51,14 +60,18 @@ public class ReportService {
             addText(document, 12, "Month: " + dateUtils.getMonthString(month));
             document.add( new Paragraph("\n") );
 
-            PdfPTable table = new PdfPTable(8);
-            addTableHeader(table);
-            addRows(table, punchList);
 
-            document.add(table);
+            if (punchList != null && !punchList.isEmpty()) {
+                Table table = new Table(8);
+                addTableHeader(table);
+                addRows(table, punchList);
+                document.add(table);
+            } else {
+                addText(document, 12, "Employee had no punches in this period");
+                document.add( new Paragraph("\n") );
+            }
 
             byte[] byteArray = byteStream.toByteArray();
-            document.close();
             return byteArray;
 
         } catch (Exception e) {
@@ -72,18 +85,18 @@ public class ReportService {
         return employeeService.getEmployeeWithId(employeeId).getName();
     }
 
-    private void addTableHeader(PdfPTable table) {
+    private void addTableHeader(Table table) {
         Stream.of("Day", "Punch #1", "Punch #2", "Punch #3", "Punch #4", "Worked Hours", "Day Balance", "Special Observations")
                 .forEach(columnTitle -> {
-                    PdfPCell header = new PdfPCell();
-                    header.setBackgroundColor(BaseColor.LIGHT_GRAY);
-                    header.setBorderWidth(2);
-                    header.setPhrase(new Phrase(columnTitle));
-                    table.addCell(header);
+                    Cell headerCell = new Cell();
+                    headerCell.setBackgroundColor(ColorConstants.LIGHT_GRAY);
+                    headerCell.setWidth(2);
+                    headerCell.add(new Paragraph(columnTitle));
+                    table.addCell(headerCell);
                 });
     }
 
-    private void addRows(PdfPTable table, List<Punch> punchList) {
+    private void addRows(Table table, List<Punch> punchList) {
         Map<Integer, List<Punch>> punchListByDay = groupByDate(punchList);
         for (Integer day : punchListByDay.keySet()) {
             List<Punch> dailyPunches = punchListByDay.get(day);
@@ -159,11 +172,8 @@ public class ReportService {
     }
 
 
-    private void addText(Document document, int fontSize, String text) throws DocumentException {
-        Font font = FontFactory.getFont(FontFactory.HELVETICA_BOLD, fontSize, BaseColor.BLACK);
-        Chunk titleChunk = new Chunk(text, font);
-
-        document.add(titleChunk);
+    private void addText(Document document, int fontSize, String text)  {
+        document.add(new Paragraph(text));
     }
 
 }

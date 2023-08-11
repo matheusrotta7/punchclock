@@ -20,6 +20,7 @@ public class ReportController {
             byte[] pdfFileBytes = reportService.generatePunchReport(punchFilter);
             return ResponseEntity.ok(pdfFileBytes);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
