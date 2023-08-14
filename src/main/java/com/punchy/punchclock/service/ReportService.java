@@ -1,25 +1,24 @@
 package com.punchy.punchclock.service;
 
-import com.itextpdf.io.font.CFFFont;
-import com.itextpdf.io.font.FontCache;
-import com.itextpdf.io.font.FontNames;
+import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.kernel.pdf.canvas.parser.listener.ITextChunkLocation;
-import com.itextpdf.kernel.pdf.canvas.parser.listener.TextChunk;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.element.Text;
 import com.punchy.punchclock.entity.Punch;
 import com.punchy.punchclock.filter.PunchFilter;
 import com.punchy.punchclock.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 
-import java.io.ByteArrayOutputStream;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Stream;
@@ -42,42 +41,53 @@ public class ReportService {
         return createPDFReport(punchList, employeeName, punchFilter.getMonth());
     }
 
-    private byte[] createPDFReport(List<Punch> punchList, String employeeName, Integer month)  {
-        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+    private byte[] createPDFReport(List<Punch> punchList, String employeeName, Integer month) {
+        File file = new File("pdfresults/report.pdf");
+        file.getParentFile().mkdirs();
+
+        PdfWriter pdfWriter = null;
+        try {
+            pdfWriter = new PdfWriter("pdfresults/report.pdf");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+        Document document = new Document(pdfDocument);
+
+
+        PdfFont font;
 
         try {
-            PdfWriter pdfWriter = new PdfWriter(byteStream);
-            PdfDocument pdfDocument = new PdfDocument(pdfWriter);
-            Document document = new Document(pdfDocument);
-
-            addText(document, 16, "Monthly punch report");
-            document.add( new Paragraph("\n") );
-
-
-            addText(document, 12, "Employee: " + employeeName);
-            document.add( new Paragraph("\n") );
-
-            addText(document, 12, "Month: " + dateUtils.getMonthString(month));
-            document.add( new Paragraph("\n") );
-
-
-            if (punchList != null && !punchList.isEmpty()) {
-                Table table = new Table(8);
-                addTableHeader(table);
-                addRows(table, punchList);
-                document.add(table);
-            } else {
-                addText(document, 12, "Employee had no punches in this period");
-                document.add( new Paragraph("\n") );
-            }
-
-            byte[] byteArray = byteStream.toByteArray();
-            return byteArray;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
+            font = PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
+        document.add(new Paragraph("Monthly punch report").setFont(font));
+        document.add(new Paragraph("\n").setFont(font));
+
+
+        document.add(new Paragraph("Employee: " + employeeName).setFont(font));
+        document.add(new Paragraph("\n").setFont(font));
+
+        document.add(new Paragraph("Month: " + dateUtils.getMonthString(month)).setFont(font));
+        document.add(new Paragraph("\n").setFont(font));
+
+
+        if (punchList != null && !punchList.isEmpty()) {
+            Table table = new Table(8);
+            addTableHeader(table);
+            addRows(table, punchList);
+            document.add(table);
+        } else {
+            document.add(new Paragraph("Employee had no punches in this period").setFont(font));
+            document.add(new Paragraph("\n").setFont(font));
+        }
+
+        document.close();
+
+//            byte[] byteArray = byteStream.toByteArray();
+        return null;
 
     }
 
@@ -106,18 +116,22 @@ public class ReportService {
             }
 
             //check if padding necessary....
-            if (punchList.size() < 4) {
-                for (int i = 0; i < 4 - punchList.size(); i++) {
+            if (dailyPunches.size() < 4) {
+                for (int i = 0; i < 4 - dailyPunches.size(); i++) {
                     table.addCell("Missing punch");
                 }
             }
 
             //add worked hours
             String workedHoursString = calculateWorkedHours(dailyPunches);
-            table.addCell(workedHoursString);
+            table.addCell(new Paragraph(workedHoursString));
 
             //add day balance (for now it can be the difference with 8 worked hours
-            table.addCell(calculateDayBalance(workedHoursString));
+            if (workedHoursString.equals("Odd number of Punches")) {
+                table.addCell("n/a");
+            } else {
+                table.addCell(new Paragraph(calculateDayBalance(workedHoursString)).setFontColor(workedHoursString.charAt(0) == '+' ? ColorConstants.GREEN : ColorConstants.RED));
+            }
 
             //add special observations
             table.addCell("Not Implemented yet"); //todo
@@ -162,18 +176,17 @@ public class ReportService {
         for (Punch p : punchList) {
             Date punchDate = p.getTimestamp();
             int day = dateUtils.getDayFromDate(punchDate);
-            if (punchListByDay.get(day) != null) {
-                punchListByDay.get(day).add(p);
+            List<Punch> thisDayPunchList = punchListByDay.get(day);
+            if (thisDayPunchList != null) {
+                thisDayPunchList.add(p);
             } else {
-                punchListByDay.put(day, List.of(p));
+                List<Punch> newList = new ArrayList<>();
+                newList.add(p);
+                punchListByDay.put(day, newList);
             }
         }
         return punchListByDay;
     }
 
-
-    private void addText(Document document, int fontSize, String text)  {
-        document.add(new Paragraph(text));
-    }
 
 }
