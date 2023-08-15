@@ -74,13 +74,13 @@ public class DateUtils {
             return null;
         }
 
-        return Month.of(month).name();
+        return Month.of(month+1).name();
     }
 
     public String timestampToHours(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        return String.format("%02d:%02d", cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE));
+        return String.format("%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
     }
 
     public static void main(String[] args) {
@@ -136,6 +136,14 @@ public class DateUtils {
 
         System.out.println(du.calculateOffsetBetweenTwoHourStrings(hourStrRef, hourStr));
 
+        calendar.set(2020, Calendar.FEBRUARY, 1, 22, 23, 10);
+
+        Date date24 = calendar.getTime();
+        String date24str = du.timestampToHours(date24);
+        System.out.println("date24str");
+        System.out.println(date24str);
+
+
     }
 
     public Long calculateOffsetTime(Date dateCur, Date datePrev) {
@@ -173,4 +181,32 @@ public class DateUtils {
         }
     }
 
+    public String sumHourStrings(String time1, String time2) {
+        // Splitting input strings into hours and minutes
+        String[] time1Parts = time1.split(":");
+        String[] time2Parts = time2.split(":");
+
+        int hours1 = Integer.parseInt(time1Parts[0]);
+        int minutes1 = Integer.parseInt(time1Parts[1]);
+        int hours2 = Integer.parseInt(time2Parts[0]);
+        int minutes2 = Integer.parseInt(time2Parts[1]);
+
+        // Calculating the total minutes for each time
+        int totalMinutes1 = hours1 * 60 + minutes1;
+        int totalMinutes2 = hours2 * 60 + minutes2;
+
+        // Calculating the time offset in minutes
+        int offsetMinutes = totalMinutes2 + totalMinutes1;
+
+        // Calculating hours and minutes for the offset
+        int offsetHours = offsetMinutes / 60;
+        offsetMinutes %= 60;
+
+        // Formatting the result as a string
+        if (offsetHours < 0 || (offsetHours == 0 && offsetMinutes < 0)) {
+            return String.format("-%02d:%02d", Math.abs(offsetHours), Math.abs(offsetMinutes));
+        } else {
+            return String.format("+%02d:%02d", Math.abs(offsetHours), Math.abs(offsetMinutes));
+        }
+    }
 }

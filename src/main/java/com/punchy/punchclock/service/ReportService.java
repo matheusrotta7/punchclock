@@ -15,7 +15,6 @@ import com.punchy.punchclock.entity.Punch;
 import com.punchy.punchclock.filter.PunchFilter;
 import com.punchy.punchclock.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -151,18 +150,28 @@ public class ReportService {
 
             //add worked hours
             String workedHoursString = calculateWorkedHours(dailyPunches);
-            table.addCell(new Paragraph(workedHoursString));
+            table.addCell(new Paragraph(stripPlusIfNecessary(workedHoursString)));
 
             //add day balance (for now it can be the difference with 8 worked hours
             if (workedHoursString.equals("Odd number of Punches")) {
                 table.addCell("n/a");
             } else {
-                table.addCell(new Paragraph(calculateDayBalance(workedHoursString)).setFontColor(workedHoursString.charAt(0) == '+' ? ColorConstants.GREEN : ColorConstants.RED));
+                String dayBalance = calculateDayBalance(workedHoursString);
+                Color fontColor = dayBalance.charAt(0) == '+' ? ColorConstants.BLUE : ColorConstants.RED;
+                table.addCell(new Paragraph(dayBalance).setFontColor(fontColor));
             }
 
             //add special observations
 //            table.addCell("Not Implemented yet"); //todo
         }
+    }
+
+    private String stripPlusIfNecessary(String workedHoursString) {
+        if (workedHoursString == null || workedHoursString.length() == 0) {
+            return null;
+        }
+
+        return workedHoursString.charAt(0) == '+' ? workedHoursString.substring(1) : workedHoursString;
     }
 
     private String calculateDayBalance(String workedHoursString) {
@@ -179,23 +188,20 @@ public class ReportService {
         boolean openingPunch = true;
         Punch prevPunch = null;
 
-        Long offsetTimeSum = 0L;
+        String offsetTimeSumString = "00:00";
 
         for (Punch curPunch : dailyPunches) {
             if (openingPunch) {
                 prevPunch = curPunch;
                 openingPunch = false;
             } else {
-                Long offsetTime = dateUtils.calculateOffsetTime(curPunch.getTimestamp(), prevPunch.getTimestamp());
-                offsetTimeSum += offsetTime;
+                offsetTimeSumString = dateUtils.sumHourStrings(offsetTimeSumString, dateUtils.calculateOffsetBetweenTwoHourStrings(dateUtils.timestampToHours(prevPunch.getTimestamp()), dateUtils.timestampToHours(curPunch.getTimestamp())));
                 openingPunch = true;
             }
         }
 
-        Date offsetDate = new Date(offsetTimeSum);
-        String hoursString = dateUtils.timestampToHours(offsetDate);
 
-        return hoursString;
+        return offsetTimeSumString;
     }
 
     private Map<Integer, List<Punch>> groupByDate(List<Punch> punchList) {
