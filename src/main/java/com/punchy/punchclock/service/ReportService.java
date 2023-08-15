@@ -75,7 +75,7 @@ public class ReportService {
 
 
         if (punchList != null && !punchList.isEmpty()) {
-            Table table = new Table(8);
+            Table table = new Table(7);
             addTableHeader(table);
             addRows(table, punchList);
             document.add(table);
@@ -87,7 +87,34 @@ public class ReportService {
         document.close();
 
 //            byte[] byteArray = byteStream.toByteArray();
-        return null;
+        FileInputStream fl = null;
+        try {
+            fl = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Now creating byte array of same length as file
+        byte[] arr = new byte[(int)file.length()];
+
+        // Reading file content to byte array
+        // using standard read() method
+        try {
+            fl.read(arr);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // lastly closing an instance of file input stream
+        // to avoid memory leakage
+        try {
+            fl.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Returning above byte array
+        return arr;
 
     }
 
@@ -96,7 +123,7 @@ public class ReportService {
     }
 
     private void addTableHeader(Table table) {
-        Stream.of("Day", "Punch #1", "Punch #2", "Punch #3", "Punch #4", "Worked Hours", "Day Balance", "Special Observations")
+        Stream.of("Day", "Punch #1", "Punch #2", "Punch #3", "Punch #4", "Worked Hours", "Day Balance")
                 .forEach(columnTitle -> {
                     Cell headerCell = new Cell();
                     headerCell.setBackgroundColor(ColorConstants.LIGHT_GRAY);
@@ -134,7 +161,7 @@ public class ReportService {
             }
 
             //add special observations
-            table.addCell("Not Implemented yet"); //todo
+//            table.addCell("Not Implemented yet"); //todo
         }
     }
 
