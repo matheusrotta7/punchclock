@@ -5,10 +5,9 @@ import org.springframework.stereotype.Component;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
+import java.time.*;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalField;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -78,9 +77,9 @@ public class DateUtils {
     }
 
     public String timestampToHours(Date date) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        return String.format("%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
+        ZonedDateTime zonedDateTime = date.toInstant().atZone(ZoneOffset.UTC);
+
+        return String.format("%02d:%02d", zonedDateTime.getHour(), zonedDateTime.getMinute());
     }
 
     public static void main(String[] args) {
