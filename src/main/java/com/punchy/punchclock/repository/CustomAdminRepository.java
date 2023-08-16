@@ -11,4 +11,7 @@ public interface CustomAdminRepository {
 
     @Transactional
     void saveToken(String token, Date tokenExpiryDate, Person targetPerson);
+
+    @Transactional
+    void updatePassword(String newPassword, Person targetPerson);
 }

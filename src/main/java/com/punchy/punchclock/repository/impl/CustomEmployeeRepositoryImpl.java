@@ -10,8 +10,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -58,6 +56,16 @@ public class CustomEmployeeRepositoryImpl implements CustomEmployeeRepository {
         Query query = entityManager.createQuery(queryString);
         query.setParameter("token", token);
         query.setParameter("tokenExpiryDate", tokenExpiryDate);
+        query.setParameter("employeeId", targetPerson.getId());
+
+        query.executeUpdate();
+    }
+
+    @Override
+    public void updatePassword(String password, Person targetPerson) {
+        String queryString = "Update Employee e set e.password=:password where e.id=:employeeId";
+        Query query = entityManager.createQuery(queryString);
+        query.setParameter("password", password);
         query.setParameter("employeeId", targetPerson.getId());
 
         query.executeUpdate();

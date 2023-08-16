@@ -40,4 +40,8 @@ public class EmployeeService {
     public List<Employee> getAllEmployeesOfManager(Long managerId) {
         return employeeRepository.getAllEmployeesOfManager(managerId);
     }
+
+    public void updatePassword(String newPassword, Person targetPerson) {
+        employeeRepository.updatePassword(newPassword, targetPerson);
+    }
 }

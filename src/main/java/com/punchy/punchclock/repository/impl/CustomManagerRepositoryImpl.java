@@ -62,4 +62,14 @@ public class CustomManagerRepositoryImpl implements CustomManagerRepository {
         query.executeUpdate();
     }
 
+    @Override
+    public void updatePassword(String password, Person targetPerson) {
+        String queryString = "Update Manager m set m.password=:password where m.id=:managerId";
+        Query query = entityManager.createQuery(queryString);
+        query.setParameter("password", password);
+        query.setParameter("managerId", targetPerson.getId());
+
+        query.executeUpdate();
+    }
+
 }

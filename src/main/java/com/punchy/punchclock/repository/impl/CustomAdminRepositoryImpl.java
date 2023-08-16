@@ -24,4 +24,14 @@ public class CustomAdminRepositoryImpl implements CustomAdminRepository {
         query.executeUpdate();
     }
 
+    @Override
+    public void updatePassword(String newPassword, Person targetPerson) {
+        String queryString = "Update Admin a set a.password=:password where a.id=:adminId";
+        Query query = entityManager.createQuery(queryString);
+        query.setParameter("password", newPassword);
+        query.setParameter("adminId", targetPerson.getId());
+
+        query.executeUpdate();
+    }
+
 }

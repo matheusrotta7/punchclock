@@ -38,4 +38,8 @@ public class ManagerService {
     public void saveToken(String token, Date tokenExpiryDate, Person targetPerson) {
         managerRepository.saveToken(token, tokenExpiryDate, targetPerson);
     }
+
+    public void updatePassword(String newPassword, Person targetPerson) {
+        managerRepository.updatePassword(newPassword, targetPerson);
+    }
 }
