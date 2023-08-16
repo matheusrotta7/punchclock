@@ -45,6 +45,10 @@ public class FixPasswordsService {
         // could be a switch case like in login service
 
         String curPassword = person.getPassword();
+        if (curPassword == null || curPassword.length() == 0) {
+            logger.info("Skipping this person because he didn't have a password in the first place");
+            return;
+        }
         String passwordHash = calculateHash(curPassword);
 
         try {
