@@ -6,6 +6,15 @@ public class LoginResponse {
     private Long id;
     private String name;
     private String token;
+    private Boolean root;
+
+    public Boolean getRoot() {
+        return root;
+    }
+
+    public void setRoot(Boolean root) {
+        this.root = root;
+    }
 
     public String getToken() {
         return token;

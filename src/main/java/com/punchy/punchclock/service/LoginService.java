@@ -47,7 +47,11 @@ public class LoginService {
             if (isPasswordCorrect(loginBody, targetPerson)) {
                 loginResponse.setId(targetPerson.getId());
                 loginResponse.setName(targetPerson.getName());
-                loginResponse.setRole(targetPerson.getClass().getSimpleName());
+                String roleString = targetPerson.getClass().getSimpleName();
+                loginResponse.setRole(roleString);
+
+                setIfRoot(loginResponse, targetPerson, roleString);
+
                 String token = UUID.randomUUID().toString();
                 saveTokenInDatabase(token, targetPerson);
                 loginResponse.setToken(token);
@@ -61,6 +65,16 @@ public class LoginService {
         return loginResponse;
     }
 
+    private void setIfRoot(LoginResponse loginResponse, Person targetPerson, String roleString) {
+        loginResponse.setRoot(false);
+        if (roleString.equals(Admin.class.getSimpleName())) {
+            Admin admin = (Admin) targetPerson;
+            if (admin.getRoot()) {
+                loginResponse.setRoot(true);
+            }
+        }
+    }
+
     public LoginResponse recoverUserViaToken(String token) throws PunchException {
         List<Person> personList = getAllPeople();
 
@@ -71,7 +85,11 @@ public class LoginService {
 
         if (targetPerson != null) {
             LoginResponse lr = new LoginResponse();
-            lr.setRole(targetPerson.getClass().getSimpleName());
+            String roleString = targetPerson.getClass().getSimpleName();
+            lr.setRole(roleString);
+
+            setIfRoot(lr, targetPerson, roleString);
+
             lr.setName(targetPerson.getName());
             lr.setId(targetPerson.getId());
             return lr;
