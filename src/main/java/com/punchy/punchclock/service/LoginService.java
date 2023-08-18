@@ -69,7 +69,7 @@ public class LoginService {
         loginResponse.setRoot(false);
         if (roleString.equals(Admin.class.getSimpleName())) {
             Admin admin = (Admin) targetPerson;
-            if (admin.getRoot()) {
+            if (admin.getRoot() != null && admin.getRoot()) {
                 loginResponse.setRoot(true);
             }
         }

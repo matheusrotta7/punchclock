@@ -18,14 +18,14 @@ public class Admin extends Person {
     @JsonManagedReference
     private List<Manager> managerList;
 
-    private Boolean isRoot;
+    private Boolean root;
 
     public Boolean getRoot() {
-        return isRoot;
+        return root;
     }
 
     public void setRoot(Boolean root) {
-        isRoot = root;
+        this.root = root;
     }
 
     public Company getCompany() {

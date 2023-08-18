@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/company")
 @CrossOrigin
@@ -19,6 +21,17 @@ public class CompanyController {
         try {
             Company company = companyService.createCompany(companyBody);
             return ResponseEntity.ok(company);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Company>> getAllCompanies() {
+        try {
+            List<Company> companyList = companyService.getAllCompanies();
+            return ResponseEntity.ok(companyList);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();

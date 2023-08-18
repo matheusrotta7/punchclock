@@ -5,6 +5,8 @@ import com.punchy.punchclock.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class CompanyService {
 
@@ -16,4 +18,7 @@ public class CompanyService {
         return companyRepository.save(companyBody);
     }
 
+    public List<Company> getAllCompanies() {
+        return companyRepository.findAll();
+    }
 }
