@@ -14,7 +14,7 @@ public class Company {
 
     private String name;
 
-    private Boolean isPaying;
+    private Boolean paying;
 
     private Integer maxNumberOfEmployees;
 
@@ -39,11 +39,11 @@ public class Company {
     }
 
     public Boolean getPaying() {
-        return isPaying;
+        return paying;
     }
 
     public void setPaying(Boolean paying) {
-        isPaying = paying;
+        this.paying = paying;
     }
 
     public Integer getMaxNumberOfEmployees() {
