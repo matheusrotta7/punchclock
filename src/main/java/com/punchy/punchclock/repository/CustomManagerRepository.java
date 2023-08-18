@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface CustomManagerRepository {
 
-    public List<Manager> getAllManagers();
+    public List<Manager> getAllManagers(Long adminId);
 
     @Transactional
     public void saveToken(String token, Date tokenExpiryDate, Person targetPerson);

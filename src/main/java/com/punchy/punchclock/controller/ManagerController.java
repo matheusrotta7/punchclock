@@ -38,6 +38,16 @@ public class ManagerController {
         }
     }
 
+    @GetMapping("/admin/{adminId}")
+    public ResponseEntity<List<Manager>> getAllManagersFromAdmin(@PathVariable("adminId") Long adminId) {
+        List<Manager> managerList = managerService.getAllManagersFromAdmin(adminId);
+        if (managerList != null) {
+            return ResponseEntity.ok(managerList);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PostMapping
     public Manager createManager(@RequestBody Manager managerBody) {
         return managerService.createManager(managerBody);

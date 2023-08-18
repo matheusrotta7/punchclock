@@ -28,7 +28,7 @@ public class ManagerService {
     }
 
     public List<Manager> getAllManagers() {
-        return managerRepository.getAllManagers();
+        return managerRepository.getAllManagers(null);
     }
 
     public void deleteManager(Long id) {
@@ -37,5 +37,9 @@ public class ManagerService {
 
     public void saveToken(String token, Date tokenExpiryDate, Person targetPerson) {
         managerRepository.saveToken(token, tokenExpiryDate, targetPerson);
+    }
+
+    public List<Manager> getAllManagersFromAdmin(Long adminId) {
+        return managerRepository.getAllManagers(adminId);
     }
 }

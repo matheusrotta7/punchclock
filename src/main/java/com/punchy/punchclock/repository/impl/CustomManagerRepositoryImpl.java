@@ -26,12 +26,20 @@ public class CustomManagerRepositoryImpl implements CustomManagerRepository {
 
 
     @Override
-    public List<Manager> getAllManagers() {
+    public List<Manager> getAllManagers(Long adminId) {
         List<Manager> result = new ArrayList<>();
 
-        String queryString = "Select m.id, m.name, m.username, m.password, m.token, m.tokenExpiryDate from Manager m where 1=1";
+        String queryString = "Select m.id, m.name, m.username, m.password, m.token, m.tokenExpiryDate from Manager m where 1=1 ";
+
+        if (adminId != null) {
+            queryString += " and m.admin.id = :adminId";
+        }
 
         Query query = entityManager.createQuery(queryString);
+
+        if (adminId != null) {
+            query.setParameter("adminId", adminId);
+        }
 
         List<Object[]> rows = query.getResultList();
 
