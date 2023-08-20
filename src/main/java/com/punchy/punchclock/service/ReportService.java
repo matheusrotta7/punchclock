@@ -205,7 +205,7 @@ public class ReportService {
     }
 
     private Map<Integer, List<Punch>> groupByDate(List<Punch> punchList) {
-        Map<Integer, List<Punch>> punchListByDay = new HashMap<>();
+        Map<Integer, List<Punch>> punchListByDay = new TreeMap<>();
         for (Punch p : punchList) {
             Date punchDate = p.getTimestamp();
             int day = dateUtils.getDayFromDate(punchDate);
