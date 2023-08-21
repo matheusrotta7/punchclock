@@ -26,4 +26,11 @@ public class Manager extends Person {
         this.employeeList = employeeList;
     }
 
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
 }

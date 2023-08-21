@@ -37,4 +37,15 @@ public class CompanyController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Company> getCompanyById(@PathVariable("id") Long companyId) {
+        try {
+            Company company = companyService.getCompanyById(companyId);
+            return ResponseEntity.ok(company);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }
