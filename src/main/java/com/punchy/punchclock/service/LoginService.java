@@ -1,11 +1,9 @@
 package com.punchy.punchclock.service;
 
 import com.punchy.punchclock.entity.*;
-import com.punchy.punchclock.exception.IncorrectPasswordException;
 import com.punchy.punchclock.exception.PunchException;
 import com.punchy.punchclock.repository.AdminRepository;
 import com.punchy.punchclock.repository.EmployeeRepository;
-import com.punchy.punchclock.repository.ManagerRepository;
 import com.punchy.punchclock.utils.DateUtils;
 import com.punchy.punchclock.vo.LoginResponse;
 import com.punchy.punchclock.vo.Role;
@@ -32,6 +30,12 @@ public class LoginService {
     @Autowired
     private AdminService adminService;
 
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private AdminRepository adminRepository;
+
     public LoginResponse login(Person loginBody) throws PunchException {
         LoginResponse loginResponse = new LoginResponse();
 
@@ -45,24 +49,40 @@ public class LoginService {
 
         if (targetPerson != null) {
             if (isPasswordCorrect(loginBody, targetPerson)) {
-                loginResponse.setId(targetPerson.getId());
-                loginResponse.setName(targetPerson.getName());
-                String roleString = targetPerson.getClass().getSimpleName();
-                loginResponse.setRole(roleString);
+                if (companyIsPaying(targetPerson)) {
+                    loginResponse.setId(targetPerson.getId());
+                    loginResponse.setName(targetPerson.getName());
+                    String roleString = targetPerson.getClass().getSimpleName();
+                    loginResponse.setRole(roleString);
 
-                setIfRoot(loginResponse, targetPerson, roleString);
+                    setIfRoot(loginResponse, targetPerson, roleString);
 
-                String token = UUID.randomUUID().toString();
-                saveTokenInDatabase(token, targetPerson);
-                loginResponse.setToken(token);
+                    String token = UUID.randomUUID().toString();
+                    saveTokenInDatabase(token, targetPerson);
+                    loginResponse.setToken(token);
+                } else {
+                    throw new PunchException("Credentials are correct but company is no longer paying");
+                }
             } else {
-                throw new IncorrectPasswordException("A person was found but the password was incorrect");
+                throw new PunchException("A person was found but the password was incorrect");
             }
         } else {
             throw new PunchException("Person not found");
         }
 
         return loginResponse;
+    }
+
+    private boolean companyIsPaying(Person targetPerson) {
+        String personClassStr = targetPerson.getClass().getSimpleName().toUpperCase();
+        Role personRole = Role.valueOf(personClassStr);
+        Company company = null;
+        switch (personRole) {
+            case ADMIN -> company = adminRepository.getAdminCompany(targetPerson.getId());
+            case MANAGER -> company = employeeRepository.getEmployeesCompany(targetPerson.getId());
+            case EMPLOYEE -> company = employeeRepository.getEmployeesCompany(((Employee) targetPerson).getManager().getId());
+        }
+        return company.getPaying();
     }
 
     private void setIfRoot(LoginResponse loginResponse, Person targetPerson, String roleString) {

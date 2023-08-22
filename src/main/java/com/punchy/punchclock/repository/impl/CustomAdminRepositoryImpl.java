@@ -1,5 +1,6 @@
 package com.punchy.punchclock.repository.impl;
 
+import com.punchy.punchclock.entity.Company;
 import com.punchy.punchclock.entity.Person;
 import com.punchy.punchclock.repository.CustomAdminRepository;
 import jakarta.persistence.EntityManager;
@@ -7,6 +8,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 
 import java.util.Date;
+import java.util.List;
 
 public class CustomAdminRepositoryImpl implements CustomAdminRepository {
 
@@ -23,5 +25,23 @@ public class CustomAdminRepositoryImpl implements CustomAdminRepository {
 
         query.executeUpdate();
     }
+
+    @Override
+    public Company getAdminCompany(Long adminId) {
+        String queryString = "from Company c " +
+                "where c.id = (" +
+                "select adm.company.id  from Admin adm where adm.id = :adminId)";
+
+        Query query = entityManager.createQuery(queryString);
+        query.setParameter("adminId", adminId);
+        List<Company> companyList = query.getResultList();
+        if (!companyList.isEmpty()) {
+            return companyList.get(0);
+        } else {
+            return null;
+        }
+    }
+
+
 
 }

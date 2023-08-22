@@ -1,5 +1,6 @@
 package com.punchy.punchclock.repository;
 
+import com.punchy.punchclock.entity.Company;
 import com.punchy.punchclock.entity.Person;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
@@ -11,4 +12,6 @@ public interface CustomAdminRepository {
 
     @Transactional
     void saveToken(String token, Date tokenExpiryDate, Person targetPerson);
+
+    Company getAdminCompany(Long id);
 }

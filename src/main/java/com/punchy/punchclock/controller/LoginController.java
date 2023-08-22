@@ -1,9 +1,9 @@
 package com.punchy.punchclock.controller;
 
 import com.punchy.punchclock.entity.Person;
-import com.punchy.punchclock.exception.IncorrectPasswordException;
 import com.punchy.punchclock.exception.PunchException;
 import com.punchy.punchclock.service.LoginService;
+import com.punchy.punchclock.vo.ErrorMessage;
 import com.punchy.punchclock.vo.LoginResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,18 +23,14 @@ public class LoginController {
     private LoginService loginService;
 
     @PostMapping
-    public ResponseEntity<LoginResponse> login(@RequestBody Person loginBody) {
+    public ResponseEntity<?> login(@RequestBody Person loginBody) {
         try {
             logger.info("Received a login request");
             LoginResponse loginResponse = loginService.login(loginBody);
             return ResponseEntity.ok(loginResponse);
-        } catch (IncorrectPasswordException ipe) {
-            ipe.printStackTrace();
-            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
-        }
-        catch (PunchException pe) {
+        } catch (PunchException pe) {
             pe.printStackTrace();
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatusCode.valueOf(400)).body(new ErrorMessage(pe.getLocalizedMessage()));
         }
         catch (Exception e) {
             e.printStackTrace();

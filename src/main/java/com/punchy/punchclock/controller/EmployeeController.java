@@ -3,6 +3,7 @@ package com.punchy.punchclock.controller;
 import com.punchy.punchclock.entity.Employee;
 import com.punchy.punchclock.exception.PunchException;
 import com.punchy.punchclock.service.EmployeeService;
+import com.punchy.punchclock.vo.ErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +29,16 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employeeBody) {
+    public ResponseEntity<?> createEmployee(@RequestBody Employee employeeBody) {
         try {
             Employee employee = employeeService.createEmployee(employeeBody);
             return ResponseEntity.ok(employee);
-        } catch (PunchException punchException) {
-            return ResponseEntity.badRequest().build();
+        } catch (PunchException pe) {
+            pe.printStackTrace();
+            return ResponseEntity.badRequest().body(new ErrorMessage(pe.getLocalizedMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
         }
     }
 
