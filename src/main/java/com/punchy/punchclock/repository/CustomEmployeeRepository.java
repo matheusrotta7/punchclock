@@ -20,4 +20,5 @@ public interface CustomEmployeeRepository {
     List<Employee> getAllEmployeesOfManager(Long managerId);
 
     Company getEmployeesCompany(Long managerId);
+
 }

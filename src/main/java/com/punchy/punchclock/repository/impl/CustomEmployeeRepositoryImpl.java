@@ -75,21 +75,22 @@ public class CustomEmployeeRepositoryImpl implements CustomEmployeeRepository {
     }
 
     @Override
-    public Company getEmployeesCompany(Long managerId) {
+    public Company getEmployeesCompany(Long employeeId) {
         String queryString = "from Company c " +
                 "where c.id = (" +
                 "select adm.company.id  from Admin adm where adm.id = (" +
-                "select m.admin.id  from Manager m where m.id = :managerId))";
+                "select m.admin.id  from Manager m where m.id = (" +
+                "select e.manager.id from Employee e where e.id = :employeeId)))";
 
         Query query = entityManager.createQuery(queryString);
-        query.setParameter("managerId", managerId);
+        query.setParameter("employeeId", employeeId);
         List<Company> companyList = query.getResultList();
         if (!companyList.isEmpty()) {
             return companyList.get(0);
         } else {
             return null;
         }
-
     }
 
-}
+
+    }

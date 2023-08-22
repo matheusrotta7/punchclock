@@ -1,5 +1,6 @@
 package com.punchy.punchclock.repository.impl;
 
+import com.punchy.punchclock.entity.Company;
 import com.punchy.punchclock.entity.Manager;
 import com.punchy.punchclock.entity.Person;
 import com.punchy.punchclock.repository.CustomManagerRepository;
@@ -68,6 +69,24 @@ public class CustomManagerRepositoryImpl implements CustomManagerRepository {
         query.setParameter("managerId", targetPerson.getId());
 
         query.executeUpdate();
+    }
+
+    @Override
+    public Company getManagersCompany(Long managerId) {
+        String queryString = "from Company c " +
+                "where c.id = (" +
+                "select adm.company.id  from Admin adm where adm.id = (" +
+                "select m.admin.id  from Manager m where m.id = :managerId))";
+
+        Query query = entityManager.createQuery(queryString);
+        query.setParameter("managerId", managerId);
+        List<Company> companyList = query.getResultList();
+        if (!companyList.isEmpty()) {
+            return companyList.get(0);
+        } else {
+            return null;
+        }
+
     }
 
 }

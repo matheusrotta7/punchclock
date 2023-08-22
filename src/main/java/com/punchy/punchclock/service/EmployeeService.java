@@ -3,6 +3,7 @@ package com.punchy.punchclock.service;
 import com.punchy.punchclock.entity.*;
 import com.punchy.punchclock.exception.PunchException;
 import com.punchy.punchclock.repository.EmployeeRepository;
+import com.punchy.punchclock.repository.ManagerRepository;
 import com.punchy.punchclock.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,9 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
 
     @Autowired
+    private ManagerRepository managerRepository;
+
+    @Autowired
     private ManagerService managerService;
 
     public Employee getEmployeeWithId(Long id) {
@@ -33,7 +37,7 @@ public class EmployeeService {
     }
 
     public Employee createEmployee(Employee employeeBody) throws PunchException {
-        Company company = employeeRepository.getEmployeesCompany(employeeBody.getManager().getId());
+        Company company = managerRepository.getManagersCompany(employeeBody.getManager().getId());
         int curNumberOfEmployees = numberOfEmployees(company);
         int maxNumberOfEmployees = company.getMaxNumberOfEmployees();
         if (curNumberOfEmployees < maxNumberOfEmployees) {

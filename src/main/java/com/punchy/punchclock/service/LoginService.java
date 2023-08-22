@@ -4,6 +4,7 @@ import com.punchy.punchclock.entity.*;
 import com.punchy.punchclock.exception.PunchException;
 import com.punchy.punchclock.repository.AdminRepository;
 import com.punchy.punchclock.repository.EmployeeRepository;
+import com.punchy.punchclock.repository.ManagerRepository;
 import com.punchy.punchclock.utils.DateUtils;
 import com.punchy.punchclock.vo.LoginResponse;
 import com.punchy.punchclock.vo.Role;
@@ -35,6 +36,9 @@ public class LoginService {
 
     @Autowired
     private AdminRepository adminRepository;
+
+    @Autowired
+    private ManagerRepository managerRepository;
 
     public LoginResponse login(Person loginBody) throws PunchException {
         LoginResponse loginResponse = new LoginResponse();
@@ -73,15 +77,19 @@ public class LoginService {
         return loginResponse;
     }
 
-    private boolean companyIsPaying(Person targetPerson) {
+    private boolean companyIsPaying(Person targetPerson) throws PunchException {
         String personClassStr = targetPerson.getClass().getSimpleName().toUpperCase();
         Role personRole = Role.valueOf(personClassStr);
         Company company = null;
         switch (personRole) {
-            case ADMIN -> company = adminRepository.getAdminCompany(targetPerson.getId());
-            case MANAGER -> company = employeeRepository.getEmployeesCompany(targetPerson.getId());
-            case EMPLOYEE -> company = employeeRepository.getEmployeesCompany(((Employee) targetPerson).getManager().getId());
+            case ADMIN -> company = adminRepository.getAdminsCompany(targetPerson.getId());
+            case MANAGER -> company = managerRepository.getManagersCompany(targetPerson.getId());
+            case EMPLOYEE -> company = employeeRepository.getEmployeesCompany(targetPerson.getId());
         }
+        if (company == null) {
+            throw new PunchException("Your account is not associated with any company, this should not be possible, please contact your administrator");
+        }
+
         return company.getPaying();
     }
 

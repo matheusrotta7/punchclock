@@ -27,7 +27,7 @@ public class CustomAdminRepositoryImpl implements CustomAdminRepository {
     }
 
     @Override
-    public Company getAdminCompany(Long adminId) {
+    public Company getAdminsCompany(Long adminId) {
         String queryString = "from Company c " +
                 "where c.id = (" +
                 "select adm.company.id  from Admin adm where adm.id = :adminId)";
