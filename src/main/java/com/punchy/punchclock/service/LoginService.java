@@ -51,33 +51,33 @@ public class LoginService {
                 .findFirst()
                 .orElse(null);
 
-        if (targetPerson != null) {
-            if (isPasswordCorrect(loginBody, targetPerson)) {
-                if (companyIsPaying(targetPerson)) {
-                    loginResponse.setId(targetPerson.getId());
-                    loginResponse.setName(targetPerson.getName());
-                    String roleString = targetPerson.getClass().getSimpleName();
-                    loginResponse.setRole(roleString);
-
-                    setIfRoot(loginResponse, targetPerson, roleString);
-
-                    String token = UUID.randomUUID().toString();
-                    saveTokenInDatabase(token, targetPerson);
-                    loginResponse.setToken(token);
-                } else {
-                    throw new PunchException("Credentials are correct but company is no longer paying");
-                }
-            } else {
-                throw new PunchException("A person was found but the password was incorrect");
-            }
-        } else {
+        if (targetPerson == null) {
             throw new PunchException("Person not found");
         }
+        if (!isPasswordCorrect(loginBody, targetPerson)) {
+            throw new PunchException("A person was found but the password was incorrect");
+        }
+
+        loginResponse.setId(targetPerson.getId());
+        loginResponse.setName(targetPerson.getName());
+        String roleString = targetPerson.getClass().getSimpleName();
+        loginResponse.setRole(roleString);
+
+        setIfRoot(loginResponse, targetPerson, roleString);
+
+        if (!isCompanyPaying(targetPerson) && !loginResponse.getRoot()) { // root doesn't have to pay :)
+            throw new PunchException("Credentials are correct but company is no longer paying");
+        }
+
+        String token = UUID.randomUUID().toString();
+        saveTokenInDatabase(token, targetPerson);
+        loginResponse.setToken(token);
+
 
         return loginResponse;
     }
 
-    private boolean companyIsPaying(Person targetPerson) throws PunchException {
+    private boolean isCompanyPaying(Person targetPerson) throws PunchException {
         String personClassStr = targetPerson.getClass().getSimpleName().toUpperCase();
         Role personRole = Role.valueOf(personClassStr);
         Company company = null;
@@ -87,7 +87,7 @@ public class LoginService {
             case EMPLOYEE -> company = employeeRepository.getEmployeesCompany(targetPerson.getId());
         }
         if (company == null) {
-            throw new PunchException("Your account is not associated with any company, this should not be possible, please contact your administrator");
+            return false; // if you can't find the employee's company, assume the company is not paying (could just be root)
         }
 
         return company.getPaying();
