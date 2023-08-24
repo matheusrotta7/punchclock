@@ -50,6 +50,19 @@
 			<version>8.0.1</version>
 			<type>pom</type>
 		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.angus</groupId>
+			<artifactId>angus-mail</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.mailjet</groupId>
+			<artifactId>mailjet-client</artifactId>
+			<version>5.2.3</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
