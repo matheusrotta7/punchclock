@@ -28,8 +28,7 @@ public class EmailService {
         Email to = new Email(destinyEmailAddress);
         Mail mail = new Mail();
 
-        mail.addContent(new Content("text/plain", "You have requested a password reset, here's the link to do it:"));
-        mail.addContent(new Content("text/html", "<a href=" + temporaryPageLink + ">Password Reset</a>"));
+        mail.addContent(new Content("text/plain", "You have requested a password reset, here's the link to do it: \n" + temporaryPageLink));
         mail.setFrom(from);
         mail.setSubject(subject);
 
