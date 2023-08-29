@@ -92,5 +92,15 @@ public class CustomEmployeeRepositoryImpl implements CustomEmployeeRepository {
         }
     }
 
+    @Override
+    public void savePasswordToken(String passwordToken, Person targetPerson) {
+        String queryString = "Update Employee e set e.passwordResetToken=:passwordToken where e.id=:employeeId";
+        Query query = entityManager.createQuery(queryString);
+        query.setParameter("passwordToken", passwordToken);
+        query.setParameter("employeeId", targetPerson.getId());
 
+        query.executeUpdate();
     }
+
+
+}

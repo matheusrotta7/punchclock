@@ -18,4 +18,7 @@ public interface CustomManagerRepository {
     public void saveToken(String token, Date tokenExpiryDate, Person targetPerson);
 
     Company getManagersCompany(Long managerId);
+
+    @Transactional
+    void savePasswordToken(String passwordToken, Person targetPerson);
 }

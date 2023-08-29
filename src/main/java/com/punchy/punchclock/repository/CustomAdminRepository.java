@@ -14,4 +14,7 @@ public interface CustomAdminRepository {
     void saveToken(String token, Date tokenExpiryDate, Person targetPerson);
 
     Company getAdminsCompany(Long adminId);
+
+    @Transactional
+    void savePasswordToken(String token, Person targetPerson);
 }

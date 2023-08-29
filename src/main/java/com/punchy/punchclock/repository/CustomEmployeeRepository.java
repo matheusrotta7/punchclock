@@ -21,4 +21,6 @@ public interface CustomEmployeeRepository {
 
     Company getEmployeesCompany(Long managerId);
 
+    @Transactional
+    void savePasswordToken(String passwordToken, Person targetPerson);
 }

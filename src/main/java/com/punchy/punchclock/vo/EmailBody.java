@@ -4,8 +4,6 @@ public class EmailBody {
 
     public String destinyEmailAddress;
 
-    public String temporaryPageLink;
-
     public String getDestinyEmailAddress() {
         return destinyEmailAddress;
     }
@@ -14,11 +12,5 @@ public class EmailBody {
         this.destinyEmailAddress = destinyEmailAddress;
     }
 
-    public String getTemporaryPageLink() {
-        return temporaryPageLink;
-    }
 
-    public void setTemporaryPageLink(String temporaryPageLink) {
-        this.temporaryPageLink = temporaryPageLink;
-    }
 }

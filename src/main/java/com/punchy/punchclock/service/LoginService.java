@@ -43,13 +43,7 @@ public class LoginService {
     public LoginResponse login(Person loginBody) throws PunchException {
         LoginResponse loginResponse = new LoginResponse();
 
-        List<Person> personList = getAllPeople();
-
-
-        Person targetPerson = personList.stream()
-                .filter(p -> loginBody.getUsername().equals(p.getUsername()))
-                .findFirst()
-                .orElse(null);
+        Person targetPerson = getTargetPersonByUsername(loginBody.getUsername());
 
         if (targetPerson == null) {
             throw new PunchException("Person not found");
@@ -75,6 +69,17 @@ public class LoginService {
 
 
         return loginResponse;
+    }
+
+    public Person getTargetPersonByUsername(String username) {
+        List<Person> personList = getAllPeople();
+
+
+        Person targetPerson = personList.stream()
+                .filter(p -> username.equals(p.getUsername()))
+                .findFirst()
+                .orElse(null);
+        return targetPerson;
     }
 
     private boolean isCompanyPaying(Person targetPerson) throws PunchException {

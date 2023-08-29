@@ -89,4 +89,14 @@ public class CustomManagerRepositoryImpl implements CustomManagerRepository {
 
     }
 
+    @Override
+    public void savePasswordToken(String passwordToken, Person targetPerson) {
+        String queryString = "Update Manager m set m.passwordResetToken=:passwordToken where m.id=:managerId";
+        Query query = entityManager.createQuery(queryString);
+        query.setParameter("passwordToken", passwordToken);
+        query.setParameter("managerId", targetPerson.getId());
+
+        query.executeUpdate();
+    }
+
 }

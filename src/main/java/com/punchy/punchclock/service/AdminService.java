@@ -31,4 +31,8 @@ public class AdminService {
     public void saveToken(String token, Date tokenExpiryDate, Person targetPerson) {
         adminRepository.saveToken(token, tokenExpiryDate, targetPerson);
     }
+
+    public void savePasswordToken(String token, Person targetPerson) {
+        adminRepository.savePasswordToken(token, targetPerson);
+    }
 }

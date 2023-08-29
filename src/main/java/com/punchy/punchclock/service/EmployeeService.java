@@ -66,4 +66,8 @@ public class EmployeeService {
     public List<Employee> getAllEmployeesOfManager(Long managerId) {
         return employeeRepository.getAllEmployeesOfManager(managerId);
     }
+
+    public void savePasswordToken(String passwordToken, Person targetPerson) {
+        employeeRepository.savePasswordToken(passwordToken, targetPerson);
+    }
 }

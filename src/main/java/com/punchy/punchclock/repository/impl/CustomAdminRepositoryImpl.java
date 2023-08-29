@@ -42,6 +42,15 @@ public class CustomAdminRepositoryImpl implements CustomAdminRepository {
         }
     }
 
+    @Override
+    public void savePasswordToken(String passwordToken, Person targetPerson) {
+        String queryString = "Update Admin a set a.passwordResetToken=:passwordToken where a.id=:adminId";
+        Query query = entityManager.createQuery(queryString);
+        query.setParameter("passwordToken", passwordToken);
+        query.setParameter("adminId", targetPerson.getId());
+
+        query.executeUpdate();
+    }
 
 
 }

@@ -42,4 +42,8 @@ public class ManagerService {
     public List<Manager> getAllManagersFromAdmin(Long adminId) {
         return managerRepository.getAllManagers(adminId);
     }
+
+    public void savePasswordToken(String passwordToken, Person targetPerson) {
+        managerRepository.savePasswordToken(passwordToken, targetPerson);
+    }
 }

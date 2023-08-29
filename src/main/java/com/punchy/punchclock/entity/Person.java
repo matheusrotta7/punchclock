@@ -19,7 +19,17 @@ public class Person {
 
     private String token;
 
+    private String passwordResetToken;
+
     private Date tokenExpiryDate;
+
+    public String getPasswordResetToken() {
+        return passwordResetToken;
+    }
+
+    public void setPasswordResetToken(String passwordResetToken) {
+        this.passwordResetToken = passwordResetToken;
+    }
 
     public String getToken() {
         return token;
