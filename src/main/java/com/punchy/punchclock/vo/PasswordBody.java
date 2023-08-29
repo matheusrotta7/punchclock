@@ -3,7 +3,7 @@ package com.punchy.punchclock.vo;
 public class PasswordBody {
 
     private String passwordHash;
-    private String token;
+    private String passwordToken;
 
     public String getPasswordHash() {
         return passwordHash;
@@ -13,11 +13,11 @@ public class PasswordBody {
         this.passwordHash = passwordHash;
     }
 
-    public String getToken() {
-        return token;
+    public String getPasswordToken() {
+        return passwordToken;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setPasswordToken(String passwordToken) {
+        this.passwordToken = passwordToken;
     }
 }

@@ -30,7 +30,7 @@ public class CustomManagerRepositoryImpl implements CustomManagerRepository {
     public List<Manager> getAllManagers(Long adminId) {
         List<Manager> result = new ArrayList<>();
 
-        String queryString = "Select m.id, m.name, m.username, m.password, m.token, m.tokenExpiryDate from Manager m where 1=1 ";
+        String queryString = "Select m.id, m.name, m.username, m.password, m.token, m.tokenExpiryDate, m.passwordResetToken from Manager m where 1=1 ";
 
         if (adminId != null) {
             queryString += " and m.admin.id = :adminId";
@@ -53,7 +53,7 @@ public class CustomManagerRepositoryImpl implements CustomManagerRepository {
             curManager.setPassword(StringUtils.nullSafeToString(row[3]));
             curManager.setToken(StringUtils.nullSafeToString(row[4]));
             curManager.setTokenExpiryDate(row[5] != null ? dateUtils.stringToDate(StringUtils.nullSafeToString(row[5])) : null);
-
+            curManager.setPasswordResetToken(StringUtils.nullSafeToString(row[6]));
             result.add(curManager);
         }
 

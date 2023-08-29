@@ -3,13 +3,16 @@ package com.punchy.punchclock.service;
 import com.punchy.punchclock.entity.Admin;
 import com.punchy.punchclock.entity.Person;
 import com.punchy.punchclock.exception.PunchException;
+import com.punchy.punchclock.repository.PersonRepository;
 import com.punchy.punchclock.vo.EmailBody;
+import com.punchy.punchclock.vo.LoginResponse;
 import com.punchy.punchclock.vo.PasswordBody;
 import com.punchy.punchclock.vo.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -29,6 +32,9 @@ public class PasswordResetService {
 
     @Autowired
     private EmployeeService employeeService;
+
+    @Autowired
+    private PersonRepository personRepository;
 
     public void startPasswordResetProcess(EmailBody emailBody) throws PunchException {
         //recover user from login methods that search person by email
@@ -54,10 +60,22 @@ public class PasswordResetService {
 
     }
 
-    public void finishPasswordResetProcess(PasswordBody passwordBody) {
+    public void finishPasswordResetProcess(PasswordBody passwordBody) throws PunchException {
         //search for token in database
-        //if not found, return error
-        //if found, then change person's password with passwordHash that was given
+        List<Person> personList = loginService.getAllPeople();
+
+        Person targetPerson = personList.stream()
+                .filter(p -> passwordBody.getPasswordToken().equals(p.getPasswordResetToken()))
+                .findFirst()
+                .orElse(null);
+
+        if (targetPerson != null) {
+            //if found, then change person's password with passwordHash that was given
+            personRepository.changePersonPassword(passwordBody.getPasswordHash(), targetPerson);
+        } else {
+            //if not found, return error
+            throw new PunchException("A person was not found with this cookie");
+        }
 
     }
 

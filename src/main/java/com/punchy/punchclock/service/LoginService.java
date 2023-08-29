@@ -74,7 +74,6 @@ public class LoginService {
     public Person getTargetPersonByUsername(String username) {
         List<Person> personList = getAllPeople();
 
-
         Person targetPerson = personList.stream()
                 .filter(p -> username.equals(p.getUsername()))
                 .findFirst()
@@ -131,7 +130,7 @@ public class LoginService {
         }
     }
 
-    private List<Person> getAllPeople() {
+    public List<Person> getAllPeople() {
         List<Employee> employeeList = employeeService.getAllEmployees();
         List<Manager> managerList = managerService.getAllManagers();
         List<Admin> adminList = adminService.getAllAdmins();

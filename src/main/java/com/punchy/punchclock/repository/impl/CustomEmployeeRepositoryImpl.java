@@ -31,7 +31,7 @@ public class CustomEmployeeRepositoryImpl implements CustomEmployeeRepository {
     public List<Employee> getAllEmployees() {
         List<Employee> result = new ArrayList<>();
 
-        String queryString = "Select e.id, e.name, e.username, e.password, e.token, e.tokenExpiryDate from Employee e where 1=1";
+        String queryString = "Select e.id, e.name, e.username, e.password, e.token, e.tokenExpiryDate, e.passwordResetToken from Employee e where 1=1";
 
         Query query = entityManager.createQuery(queryString);
 
@@ -46,6 +46,7 @@ public class CustomEmployeeRepositoryImpl implements CustomEmployeeRepository {
             curEmployee.setPassword(StringUtils.nullSafeToString(row[3]));
             curEmployee.setToken(StringUtils.nullSafeToString(row[4]));
             curEmployee.setTokenExpiryDate(row[5] != null ? dateUtils.stringToDate(StringUtils.nullSafeToString(row[5])) : null);
+            curEmployee.setPasswordResetToken(StringUtils.nullSafeToString(row[6]));
 
             result.add(curEmployee);
         }
