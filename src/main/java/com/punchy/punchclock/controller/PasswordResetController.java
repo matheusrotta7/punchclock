@@ -41,7 +41,7 @@ public class PasswordResetController {
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.internalServerError().body(new ErrorMessage(e.getLocalizedMessage()));
         }
     }
 
