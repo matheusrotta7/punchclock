@@ -49,7 +49,8 @@ public class PasswordResetService {
         savePasswordTokenInDatabase(passwordResetToken, targetPerson);
 
         //create temporary page link string based on current frontend dynamic route format
-        String temporaryPageLink = "https://punchy.app/passwordresetscreen/" + passwordResetToken;
+        String locale = emailBody.getLocale();
+        String temporaryPageLink = "https://punchy.app/" + locale + "/" + "passwordresetscreen/" + passwordResetToken;
         //send password reset email with that link to user's  email
         emailService.sendPasswordResetEmail(emailBody.getDestinyEmailAddress(), temporaryPageLink);
 

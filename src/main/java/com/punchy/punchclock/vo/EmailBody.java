@@ -2,7 +2,9 @@ package com.punchy.punchclock.vo;
 
 public class EmailBody {
 
-    public String destinyEmailAddress;
+    private String locale;
+
+    private String destinyEmailAddress;
 
     public String getDestinyEmailAddress() {
         return destinyEmailAddress;
@@ -12,5 +14,11 @@ public class EmailBody {
         this.destinyEmailAddress = destinyEmailAddress;
     }
 
+    public String getLocale() {
+        return locale;
+    }
 
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
 }
