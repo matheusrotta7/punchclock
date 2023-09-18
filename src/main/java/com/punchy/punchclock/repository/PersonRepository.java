@@ -8,5 +8,9 @@ import org.springframework.stereotype.Repository;
 public interface PersonRepository {
 
     @Transactional
-    public void changePersonPassword(String passwordHash, Person targetPerson);
+    void changePersonPassword(String passwordHash, Person targetPerson);
+
+    @Transactional
+    void deletePasswordResetToken(Person targetPerson);
+
 }

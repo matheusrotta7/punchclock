@@ -25,4 +25,18 @@ public class PersonRepositoryImpl implements PersonRepository {
 
         query.executeUpdate();
     }
+
+    @Override
+    @Transactional
+    public void deletePasswordResetToken(Person targetPerson) {
+        String className = targetPerson.getClass().getSimpleName();
+        String queryString = "Update " + className + " p set p.passwordResetToken=:passwordResetToken where p.id=:personId";
+        Query query = entityManager.createQuery(queryString);
+        //set password reset token to null so that no one else can use this token for password reset
+        //todo: check later if malicious user can use null to change someone's password
+        query.setParameter("passwordResetToken", null);
+        query.setParameter("personId", targetPerson.getId());
+
+        query.executeUpdate();
+    }
 }

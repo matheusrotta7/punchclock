@@ -73,6 +73,7 @@ public class PasswordResetService {
         if (targetPerson != null) {
             //if found, then change person's password with passwordHash that was given
             personRepository.changePersonPassword(passwordBody.getPasswordHash(), targetPerson);
+            personRepository.deletePasswordResetToken(targetPerson);
         } else {
             //if not found, return error
             throw new PunchException("A person was not found with this cookie");
