@@ -13,4 +13,6 @@ public interface PersonRepository {
     @Transactional
     void deletePasswordResetToken(Person targetPerson);
 
+    @Transactional
+    void deleteLoginToken(Person person);
 }
