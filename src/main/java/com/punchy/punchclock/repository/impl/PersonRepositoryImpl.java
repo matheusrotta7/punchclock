@@ -41,6 +41,7 @@ public class PersonRepositoryImpl implements PersonRepository {
     }
 
     @Override
+    @Transactional
     public void deleteLoginToken(Person targetPerson) {
         String className = targetPerson.getClass().getSimpleName();
         String queryString = "Update " + className + " p set p.token=:token where p.id=:personId";
