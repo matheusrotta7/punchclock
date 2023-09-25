@@ -43,9 +43,9 @@ public class DateUtils {
         calendar.set(year, month, 1, 0, 0);
 
         int dateMax = calendar.getActualMaximum(Calendar.DATE);
-        int hourMax = calendar.getActualMaximum(Calendar.HOUR);
-        int minuteMax = calendar.getActualMaximum(Calendar.MINUTE);
-        int secondMax = calendar.getActualMaximum(Calendar.SECOND);
+        int hourMax = 23;
+        int minuteMax = 59;
+        int secondMax = 59;
 
         calendar.set(year, month, dateMax, hourMax, minuteMax, secondMax);
 
